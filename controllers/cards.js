@@ -30,12 +30,16 @@ function getCards(req, res) {
 
 function deleteCard(req, res) {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(() => {
-      res.status(200).send({ message: 'Карточка удалена' });
+    .then((card) => {
+      if (card) {
+        res.status(200).send({ message: 'Карточка удалена' });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Такой карточки не существует' });
+        res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
       res.status(500).send({ message: 'Произошла неизвестная ошибка' });
@@ -48,15 +52,15 @@ function likeCard(req, res) {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then(() => {
-      res.status(200).send({ message: 'Лайк поставлен' });
+    .then((card) => {
+      if (card) {
+        res.status(200).send({ message: 'Лайк поставлен' });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Такой карточки не существует' });
-        return;
-      }
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
@@ -70,15 +74,15 @@ function removeLikeFromCard(req, res) {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then(() => {
-      res.status(200).send({ message: 'Лайк убран' });
+    .then((card) => {
+      if (card) {
+        res.status(200).send({ message: 'Лайк убран' });
+      } else {
+        res.status(404).send({ message: 'Такой карточки не существует' });
+      }
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send({ message: 'Такой карточки не существует' });
-        return;
-      }
-      if (err.name === 'ValidationError') {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
