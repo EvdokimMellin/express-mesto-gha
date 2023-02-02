@@ -16,7 +16,7 @@ function createCard(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -25,7 +25,7 @@ function getCards(req, res) {
     .then((cards) => {
       res.status(200).send(cards);
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 }
 
 function deleteCard(req, res) {
@@ -42,7 +42,7 @@ function deleteCard(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -64,7 +64,7 @@ function likeCard(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
@@ -86,7 +86,7 @@ function removeLikeFromCard(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 

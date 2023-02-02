@@ -5,7 +5,7 @@ function getUsers(req, res) {
     .then((users) => {
       res.status(200).send(users);
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
 }
 
 function getUser(req, res) {
@@ -22,7 +22,7 @@ function getUser(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
       res.send(err);
     });
 }
@@ -37,80 +37,47 @@ function createUser(req, res) {
         res.status(400).send({ message: 'Проверьте правильность введенных данных' });
         return;
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 }
 
-function reqTest(req) {
-  let isCorrect = false;
-  if (req.body.name || req.body.about) {
-    isCorrect = true;
-  }
-  if (req.body.name && isCorrect) {
-    if (req.body.name.length >= 2 && req.body.name.length <= 30) {
-      isCorrect = true;
-    } else {
-      isCorrect = false;
-    }
-  }
-  if (req.body.about && isCorrect) {
-    if (req.body.about.length >= 2 && req.body.about.length <= 30) {
-      isCorrect = true;
-    } else {
-      isCorrect = false;
-    }
-  }
-  return isCorrect;
-}
-
 function updateProfile(req, res) {
-  if (reqTest(req)) {
-    User.findByIdAndUpdate(req.user._id, req.body)
-      .then((user) => {
-        if (user) {
-          const updatedUser = user; // user почему-то содержит данные до обновления,
-          // поэтому мне пришлось менять их вручную для возвращения обновленных данных
-          if (req.body.name) {
-            updatedUser.name = req.body.name;
-          }
-          if (req.body.about) {
-            updatedUser.about = req.body.about;
-          }
-          res.status(200).send({ data: updatedUser });
-        } else {
-          res.status(404).send({ message: 'Такого пользователя не существует' });
-        }
-      })
-      .catch((err) => {
-        if (err.name === 'CastError') {
-          res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-          return;
-        }
-        res.status(500).send({ message: 'Произошла неизвестная ошибка' });
-      });
-  } else {
-    res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-  }
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .then((user) => {
+      if (user) {
+        res.status(200).send({ data: user });
+      } else {
+        res.status(404).send({ message: 'Такого пользователя не существует' });
+      }
+    })
+    .catch((err) => {
+      if (err.name === 'CastError' || err.name === 'ValidationError') {
+        res.status(400).send({ message: 'Проверьте правильность введенных данных' });
+        return;
+      }
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 }
 
 function updateAvatar(req, res) {
   if (req.body.avatar) {
-    User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar })
+    User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, {
+      new: true, runValidators: true,
+    })
       .then((user) => {
         if (user) {
-          const updatedUser = user;
-          updatedUser.avatar = req.body.avatar;
-          res.status(200).send({ data: updatedUser });
+          res.status(200).send({ data: user });
         } else {
           res.status(404).send({ message: 'Такого пользователя не существует' });
         }
       })
       .catch((err) => {
-        if (err.name === 'CastError') {
+        if (err.name === 'CastError' || err.name === 'ValidationError') {
           res.status(400).send({ message: 'Проверьте правильность введенных данных' });
           return;
         }
-        res.status(500).send({ message: 'Произошла неизвестная ошибка' });
+        res.status(500).send({ message: 'На сервере произошла ошибка' });
       });
   } else {
     res.status(400).send({ message: 'Проверьте правильность введенных данных' });
