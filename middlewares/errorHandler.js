@@ -8,7 +8,7 @@ const InternalServerError = require('../errors/InternalServerError');
 
 function errorHandler(err, req, res, next) {
   function checkError(e) {
-    if (e.name === 'CastError' || e.name === 'ValidationError' || e.message === 'Проверьте правильность введенных данных') {
+    if (e.name === 'CastError' || e.message === 'Validation failed' || e.message === 'Проверьте правильность введенных данных') {
       return new BadRequestError('Проверьте правильность введенных данных');
     }
     if (e.message === 'Неправильные почта или пароль') {
@@ -23,6 +23,7 @@ function errorHandler(err, req, res, next) {
     if (err.code === 11000) {
       return new ConflictError('Пользователь с такой почтой уже существует');
     }
+    console.log(err.message);
     return new InternalServerError('На сервере произошла ошибка');
   }
 
