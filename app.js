@@ -18,6 +18,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(bodyParser.json());
 
+// GitHub почему-то не видит, что ошибка поймана Joi
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
