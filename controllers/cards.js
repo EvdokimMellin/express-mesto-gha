@@ -12,13 +12,6 @@ function createCard(req, res, next) {
     name, link, owner,
   })
     .then((card) => res.status(200).send({ data: card }))
-    // .catch((err) => {
-    //   if (err.name === 'ValidationError') {
-    //     res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-    //     return;
-    //   }
-    //   res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
     .catch(next);
 }
 
@@ -27,7 +20,6 @@ function getCards(req, res, next) {
     .then((cards) => {
       res.status(200).send(cards);
     })
-    // .catch(() => res.status(500).send({ message: 'На сервере произошла ошибка' }));
     .catch(next);
 }
 
@@ -46,25 +38,9 @@ function deleteCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Карточка удалена' });
       } else {
-        // res.status(404).send({ message: 'Такой карточки не существует' });
         return Promise.reject(new Error('Такой карточки не существует'));
       }
     })
-    // .catch((err) => {
-    //   if (err.name === 'CastError') {
-    //     res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-    //     return;
-    //   }
-    //   if (err.message === 'Вы не можете удалить эту карточку') {
-    //     res.status(403).send({ message: err.message });
-    //     return;
-    //   }
-    //   if (err.message === 'Такой карточки не существует') {
-    //     res.status(404).send({ message: 'Такой карточки не существует' });
-    //     return;
-    //   }
-    //   res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
     .catch(next);
 }
 
@@ -78,17 +54,9 @@ function likeCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Лайк поставлен' });
       } else {
-        // res.status(404).send({ message: 'Такой карточки не существует' });
         return Promise.reject(new Error('Такой карточки не существует'));
       }
     })
-    // .catch((err) => {
-    //   if (err.name === 'ValidationError' || err.name === 'CastError') {
-    //     res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-    //     return;
-    //   }
-    //   res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
     .catch(next);
 }
 
@@ -102,17 +70,9 @@ function removeLikeFromCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Лайк убран' });
       } else {
-        // res.status(404).send({ message: 'Такой карточки не существует' });
         return Promise.reject(new Error('Такой карточки не существует'));
       }
     })
-    // .catch((err) => {
-    //   if (err.name === 'ValidationError' || err.name === 'CastError') {
-    //     res.status(400).send({ message: 'Проверьте правильность введенных данных' });
-    //     return;
-    //   }
-    //   res.status(500).send({ message: 'На сервере произошла ошибка' });
-    // });
     .catch(next);
 }
 
