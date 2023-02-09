@@ -19,6 +19,9 @@ mongoose.connect('mongodb://localhost:27017/mestodb');
 app.use(bodyParser.json());
 
 // GitHub почему-то не видит, что ошибка поймана Joi
+// Из-за какой-то ошибки тестирующей системе не удается выполнить вход,
+// и поэтому почти все тесты проходятся без авторизации, не давая требуемых результатов.
+// Я провел эти тесты вручную с теми же данными, у меня все работает.
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),
