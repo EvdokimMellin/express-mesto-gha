@@ -1,5 +1,7 @@
 /* eslint-disable consistent-return */
 const Card = require('../models/card');
+const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 
 function createCard(req, res, next) {
   const {
@@ -27,10 +29,10 @@ function deleteCard(req, res, next) {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (!card) {
-        return Promise.reject(new Error('Такой карточки не существует'));
+        return Promise.reject(new NotFoundError('Такой карточки не существует'));
       }
       if (card.owner.toString() !== req.user._id) {
-        return Promise.reject(new Error('Вы не можете удалить эту карточку'));
+        return Promise.reject(new ForbiddenError('Вы не можете удалить эту карточку'));
       }
     })
     .then(() => Card.findByIdAndRemove(req.params.cardId))
@@ -38,7 +40,7 @@ function deleteCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Карточка удалена' });
       } else {
-        return Promise.reject(new Error('Такой карточки не существует'));
+        return Promise.reject(new NotFoundError('Такой карточки не существует'));
       }
     })
     .catch(next);
@@ -54,7 +56,7 @@ function likeCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Лайк поставлен' });
       } else {
-        return Promise.reject(new Error('Такой карточки не существует'));
+        return Promise.reject(new NotFoundError('Такой карточки не существует'));
       }
     })
     .catch(next);
@@ -70,7 +72,7 @@ function removeLikeFromCard(req, res, next) {
       if (card) {
         res.status(200).send({ message: 'Лайк убран' });
       } else {
-        return Promise.reject(new Error('Такой карточки не существует'));
+        return Promise.reject(new NotFoundError('Такой карточки не существует'));
       }
     })
     .catch(next);

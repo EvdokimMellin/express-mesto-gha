@@ -2,6 +2,9 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
+const UnauthorizedError = require('../errors/UnauthorizedError');
 
 function getUsers(req, res, next) {
   User.find({})
@@ -17,7 +20,7 @@ function getUser(req, res, next) {
       if (user) {
         res.status(200).send({ data: user });
       } else {
-        return Promise.reject(new Error('Такого пользователя не существует'));
+        return Promise.reject(new NotFoundError('Такого пользователя не существует'));
       }
     })
     .catch(next);
@@ -30,7 +33,7 @@ function getCurrentUser(req, res, next) {
       if (user) {
         res.status(200).send({ data: user });
       } else {
-        return Promise.reject(new Error('Такого пользователя не существует'));
+        return Promise.reject(new NotFoundError('Такого пользователя не существует'));
       }
     })
     .catch(next);
@@ -60,7 +63,7 @@ function updateProfile(req, res, next) {
       if (user) {
         res.status(200).send({ data: user });
       } else {
-        return Promise.reject(new Error('Такого пользователя не существует'));
+        return Promise.reject(new NotFoundError('Такого пользователя не существует'));
       }
     })
     .catch(next);
@@ -75,12 +78,12 @@ function updateAvatar(req, res, next) {
         if (user) {
           res.status(200).send({ data: user });
         } else {
-          return Promise.reject(new Error('Такого пользователя не существует'));
+          return Promise.reject(new NotFoundError('Такого пользователя не существует'));
         }
       })
       .catch(next);
   } else {
-    next(new Error('Проверьте правильность введенных данных'));
+    next(new BadRequestError('Проверьте правильность введенных данных'));
   }
 }
 
@@ -89,14 +92,14 @@ function login(req, res, next) {
   User.findOne({ email: req.body.email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
       enteringUser = user;
       return bcrypt.compare(req.body.password, user.password);
     })
     .then((matched) => {
       if (!matched) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
       }
 
       const { JWT_SECRET } = process.env;

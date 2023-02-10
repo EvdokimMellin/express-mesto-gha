@@ -3,6 +3,7 @@ const { celebrate, Joi } = require('celebrate');
 const {
   createCard, getCards, deleteCard, likeCard, removeLikeFromCard,
 } = require('../controllers/cards');
+const NotFoundError = require('../errors/NotFoundError');
 
 router.post('/cards', celebrate({
   body: Joi.object().keys({
@@ -28,7 +29,7 @@ router.delete('/cards/:cardId/likes', celebrate({
 }), removeLikeFromCard);
 
 router.use((req, res, next) => {
-  next({ message: 'Такой страницы не существует' });
+  next(new NotFoundError('Такой страницы не существует'));
 });
 
 module.exports = router;
