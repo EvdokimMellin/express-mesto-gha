@@ -12,16 +12,12 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DATA_BASE } = process.env;
 
-mongoose.connect('mongodb://localhost:27017/mestodb');
+mongoose.connect(DATA_BASE);
 
 app.use(bodyParser.json());
 
-// GitHub почему-то не видит, что ошибка поймана Joi
-// Из-за какой-то ошибки тестирующей системе не удается выполнить вход,
-// и поэтому почти все тесты проходятся без авторизации, не давая требуемых результатов.
-// Я провел эти тесты вручную с теми же данными, у меня все работает.
 app.post('/signin', celebrate({
   body: Joi.object().keys({
     email: Joi.string().email().required(),

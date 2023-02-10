@@ -45,9 +45,9 @@ function createUser(req, res, next) {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     }))
-    .then(() => res.status(200).send({
+    .then((user) => res.status(200).send({
       data: {
-        name, about, avatar, email,
+        name: user.name, about: user.about, avatar: user.avatar, email,
       },
     }))
     .catch(next);

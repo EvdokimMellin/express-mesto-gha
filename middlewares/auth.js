@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
   const { cookie } = req.headers;
-  const { JWT_SECRET } = process.env;
+  const { JWT_SECRET = 'dev-key' } = process.env;
 
   if (!cookie || !cookie.startsWith('jwt=')) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    return next({ message: 'Необходима авторизация' });
   }
 
   const token = cookie.replace('jwt=', '');
@@ -15,7 +15,7 @@ function auth(req, res, next) {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return res.status(401).send({ message: 'Необходима авторизация' });
+    return next({ message: 'Необходима авторизация' });
   }
 
   req.user = payload;
