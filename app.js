@@ -12,7 +12,7 @@ const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 
-const { PORT = 3000, DATA_BASE } = process.env;
+const { PORT = 3000, DATA_BASE = 'mongodb://localhost:27017/mestodb' } = process.env;
 
 mongoose.connect(DATA_BASE);
 
